@@ -1,0 +1,27 @@
+# checkpoints & weights
+*.pth
+*.pt
+*.ckpt
+checkpoints/
+
+# data
+data/
+*.zip
+*.npy
+*.pkl
+
+# python
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+venv/
+.venv/
+
+# logs & outputs
+logs/
+runs/
+results/
+*.log
+
+# os
+.DS_Store
