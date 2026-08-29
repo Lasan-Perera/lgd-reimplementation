@@ -49,3 +49,15 @@ Status: confirmed by reading code.
 - Optimizer rebuilt every epoch inside `train()`, discarding Adam state.
 - `_process_attention_mask` upsamples 14x14 -> 224x224 with a triple nested
   Python loop.
+
+## Detail: split key format
+`grasp_anywhere_data.py:33` filters via `x.split('/')[-1][:-5]`, stripping 5 chars
+from e.g. `<hash>_0_1.pt` -> `<hash>_0`. So split .obj lists are keyed by
+image-hash + object index, not per-grasp-file. Confirm against .obj contents.
+
+## Detail: ruamel.yaml import breaks on current pip versions
+
+network.py:6 does `import ruamel.yaml as yaml` then calls the old
+`yaml.load(file, Loader=yaml.Loader)` API, which ruamel.yaml removed in a
+later release. requirements.txt pins no upper bound. Fix: `import yaml`
+(plain PyYAML, already a dependency, same API still supported).
