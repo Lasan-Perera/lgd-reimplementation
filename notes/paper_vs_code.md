@@ -197,3 +197,28 @@ n=28 (via --split 0.98, seen-test), IoU threshold 0.25, angle offset <30deg:
 internal split per README). At n=28, one sample flip = 3.6pp -- not
 statistically comparable to the paper's figure yet. Needs a larger overnight
 run (e.g. --split 0.85, ~200 samples) for a meaningful comparison.
+
+## Detail: y_flatten's output is dead code, not just "commented out"
+
+network.py forward(): `y = self.y_flatten(y)` is computed every forward pass
+(3.75M params), but the only consumer -- `img = torch.clone(img).detach() + y`
+-- is commented out. Since y contributes to no loss term, y_flatten receives
+zero gradient during training; its weights are at random initialization in
+the released checkpoint regardless of how long training ran.
+
+Consequence: uncommenting this line now would inject an untrained/random
+signal into lgd_pretrained.pth's already-calibrated features -- not a fix,
+likely a regression. Properly restoring this requires retraining from
+scratch with the line active (Phase 8), not a checkpoint-time patch.
+
+Also note: the commented line uses `.detach()` on img, which would block
+gradient flow from pos/cos/sin/width losses back into conv1-3 even if
+restored as-is. Unclear if intentional (protect visual trunk from noisy
+early-training text signal) or another oversight. Worth deciding explicitly
+when writing the corrected version for Track B.
+
+Empirical support: single_image_demo.py on the same real image with two
+different prompts ("Pick up apple by its skin." vs "grasp the duck")
+produced near-identical grasp boxes, both on the duck. Consistent with
+language having no effective path to the prediction via this checkpoint.
+See experiments/language_grounding_test/.
