@@ -26,3 +26,17 @@ Goal: understand every component from first principles, not to re-run released c
 - Paper: arXiv:2406.09489
 - Released code: github.com/Fsoft-AIC/LGD
 - Dataset: huggingface.co/datasets/airvlab/Grasp-Anything{,-pp}
+
+---
+
+## Qualitative results (released checkpoint)
+
+Predicted grasp rectangles from \`lgd_pretrained.pth\`, evaluated on real Grasp-Anything++ test images via the corrected reference pipeline (see [\`docs/setup.md\`](docs/setup.md) §4-5 for the CPU fixes required to get this running).
+
+| | | |
+|---|---|---|
+| ![Apple in basket](docs/images/qualitative_apple.png) | ![Spoon and coffee cup](docs/images/qualitative_spoon_cup.png) | ![Scissors on shelf](docs/images/qualitative_scissors.png) |
+
+The scissors result is notable — the predicted box lands on the handle, avoiding the blades entirely, a genuinely safety-aware grasp choice.
+
+Quantitative IoU evaluation not yet run against these same samples.
