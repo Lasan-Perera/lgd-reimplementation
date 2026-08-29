@@ -189,3 +189,11 @@ compatible space is not spelled out, and the two architectural descriptions
 **Real-robot sample size.** Table 4 reports 30 trials per method per
 scenario. Differences of 0.03 between methods are well inside the noise at
 that n.
+
+## First quantitative result (released checkpoint, corrected pipeline)
+
+n=28 (via --split 0.98, seen-test), IoU threshold 0.25, angle offset <30deg:
+7/28 = 0.250 success rate. Paper reports 0.48 on seen-test (n unclear, larger
+internal split per README). At n=28, one sample flip = 3.6pp -- not
+statistically comparable to the paper's figure yet. Needs a larger overnight
+run (e.g. --split 0.85, ~200 samples) for a meaningful comparison.
