@@ -235,3 +235,27 @@ reported numbers used a larger internal dataset per README's own caveat,
 so the evaluated distribution may differ from the public split; (b) --split
 sample selection may not match whatever the authors' internal eval used;
 (c) genuine reproduction gap. Not yet resolved.
+
+## Eq4Loss verified correct; numerical instability near t=0 found and fixed
+
+Diagnostic run (untrained network, 4 batches) confirmed the Eq. 4 implementation
+computes and clamps correctly (manually verified: norm_sq=[1724949, 47127],
+M=50176 -> mean(max(0,1724949-50176), max(0,47127-50176)) = 837386.5, matches
+printed output exactly).
+
+Most batches showed contr_eq4=0 because, pre-training, the network's residual
+output (pos_output = x_t + conv_trunk_output) approximates its own noisy input
+when trunk weights are small at init -- x0_tilde ~ x_t, so the hinge mostly
+sits below M.
+
+One batch showed contr_eq4=837386 from a t=0 sample: dividing by
+sqrt(1-abar_t), tiny at low t, amplified a small model/target mismatch
+enormously. This is a genuine cost of generalizing Eq. 4 from x_T (paper's
+literal formulation, where this denominator is always safely large) to
+arbitrary sampled t (necessary for practical training) -- the paper's version
+never faces this regime since it's only ever evaluated at t=T.
+
+Fix: added epsilon (1e-5) to the denominator, standard stabilization practice.
+Worth revisiting whether excluding/downweighting very low t from the eq4 term
+entirely is more principled once real training data is available to observe
+how often this matters in practice.
