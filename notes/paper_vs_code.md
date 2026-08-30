@@ -259,3 +259,20 @@ Fix: added epsilon (1e-5) to the denominator, standard stabilization practice.
 Worth revisiting whether excluding/downweighting very low t from the eq4 term
 entirely is more principled once real training data is available to observe
 how often this matters in practice.
+
+## Reimplementation complete (pre-training) -- verified
+
+Smoke test with all fixes: Training size 28,621 / Validation 1,376, disjoint.
+(28,621 vs 14,516 in train/seen.obj is expected: split file is keyed by
+<hash>_<obj>, positive_grasp/ has one .pt per grasp instance, ~2 per object.)
+
+All six fixes verified working together:
+- Eq. 4 implemented, both variants switchable, numerically stabilized
+- L_total actually backpropagated (Eq. 5)
+- Optimizer built once outside the epoch loop
+- ALBEF RefCOCO+ checkpoint loading (unexpected=0)
+- Language fusion (img = img + y) restored, .detach() removed
+- Train/val independent; train draws from train/seen.obj
+
+Remaining: GPU training, then re-run experiments/language_grounding_test/
+against the trained model.
