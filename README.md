@@ -39,4 +39,4 @@ Predicted grasp rectangles from \`lgd_pretrained.pth\`, evaluated on real Grasp-
 
 The scissors result is notable — the predicted box lands on the handle, avoiding the blades entirely, a genuinely safety-aware grasp choice.
 
-Quantitative IoU evaluation not yet run against these same samples.
+Quantitative baseline: 187/505 = 37.0% (95% CI ~[33%, 41%]) on seen-test, released checkpoint. Paper reports 0.48. See notes/paper_vs_code.md.
