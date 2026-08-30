@@ -222,3 +222,16 @@ different prompts ("Pick up apple by its skin." vs "grasp the duck")
 produced near-identical grasp boxes, both on the duck. Consistent with
 language having no effective path to the prediction via this checkpoint.
 See experiments/language_grounding_test/.
+
+## Quantitative result, n=505 (supersedes the n=28 preliminary)
+
+--split 0.633, seen-test, released checkpoint (lgd_pretrained.pth), corrected
+CPU pipeline: 187/505 = 0.370. Standard error ~2.1pp, 95% CI approx
+[32.8%, 41.2%]. Paper reports 0.48 on seen-test.
+
+The paper's figure falls outside this CI -- with n=505 this is unlikely to
+be sampling noise. Candidate explanations, not yet distinguished: (a) paper's
+reported numbers used a larger internal dataset per README's own caveat,
+so the evaluated distribution may differ from the public split; (b) --split
+sample selection may not match whatever the authors' internal eval used;
+(c) genuine reproduction gap. Not yet resolved.
